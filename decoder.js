@@ -14,13 +14,13 @@ function decodeLot() {
   const resultElem = document.getElementById("result");
 
   if (code.length !== 5 || isNaN(code.slice(1, 4)) || isNaN(code[4])) {
-    resultElem.textContent = "Invalid format";
+    resultElem.textContent = "❌ Invalid format. Example: R1234";
     return;
   }
 
   const year = getYearFromLetter(code[0]);
   if (!year) {
-    resultElem.textContent = "Invalid year code";
+    resultElem.textContent = "❌ Invalid year code.";
     return;
   }
 
@@ -36,29 +36,36 @@ function decodeLot() {
 
   const date = new Date(year, 0);
   date.setDate(finalDay);
-  resultElem.textContent = "Production Date: " + date.toDateString();
+  resultElem.textContent = "📅 Production Date: " + date.toDateString();
 }
 
 function handleImage(input) {
   const file = input.files[0];
+  const scanStatus = document.getElementById("scanStatus");
+  const resultElem = document.getElementById("result");
+
   if (!file) return;
 
-  const resultElem = document.getElementById("result");
-  resultElem.textContent = "Scanning...";
+  scanStatus.textContent = "📷 Processing image...";
+  resultElem.textContent = "";
 
   Tesseract.recognize(
     file,
     'eng',
     { logger: m => console.log(m) }
   ).then(({ data: { text } }) => {
+    scanStatus.textContent = "✅ Scan complete.";
     const match = text.toUpperCase().match(/\b[A-Z]\d{3}\d\b/);
     if (match) {
-      document.getElementById("lotInput").value = match[0];
+      const code = match[0];
+      document.getElementById("lotInput").value = code;
+      resultElem.textContent = `🔍 Detected code: ${code}`;
       decodeLot();
     } else {
-      resultElem.textContent = "Could not detect valid lot code. Try a clearer photo.";
+      resultElem.textContent = "❌ No valid lot code detected. Try a clearer photo.";
     }
   }).catch(() => {
-    resultElem.textContent = "Failed to process image.";
+    scanStatus.textContent = "";
+    resultElem.textContent = "⚠️ Failed to process image. Try again.";
   });
 }
