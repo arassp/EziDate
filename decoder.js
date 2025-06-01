@@ -38,3 +38,27 @@ function decodeLot() {
   date.setDate(finalDay);
   resultElem.textContent = "Production Date: " + date.toDateString();
 }
+
+function handleImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const resultElem = document.getElementById("result");
+  resultElem.textContent = "Scanning...";
+
+  Tesseract.recognize(
+    file,
+    'eng',
+    { logger: m => console.log(m) }
+  ).then(({ data: { text } }) => {
+    const match = text.toUpperCase().match(/\b[A-Z]\d{3}\d\b/);
+    if (match) {
+      document.getElementById("lotInput").value = match[0];
+      decodeLot();
+    } else {
+      resultElem.textContent = "Could not detect valid lot code. Try a clearer photo.";
+    }
+  }).catch(() => {
+    resultElem.textContent = "Failed to process image.";
+  });
+}
