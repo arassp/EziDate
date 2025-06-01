@@ -54,10 +54,7 @@ function handleImage(input) {
 
   reader.onload = function (e) {
     img.onload = function () {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-
-      // Resize to max 800x800 (adjust if needed)
+      // Resize image
       const maxDim = 800;
       let width = img.width;
       let height = img.height;
@@ -69,9 +66,28 @@ function handleImage(input) {
         height = maxDim;
       }
 
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
       canvas.width = width;
       canvas.height = height;
       ctx.drawImage(img, 0, 0, width, height);
+
+      // Preprocess: grayscale + contrast (binary)
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        const binary = gray > 160 ? 255 : 0;
+        data[i] = data[i + 1] = data[i + 2] = binary;
+      }
+      ctx.putImageData(imageData, 0, 0);
+
+      // (Optional) Show preview of processed image
+      // document.body.appendChild(canvas); // Uncomment if needed for testing
 
       Tesseract.recognize(
         canvas,
