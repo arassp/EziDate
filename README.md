@@ -10,8 +10,18 @@ Lot number format: `LDDD#`
 - `L` — Encoded year (as a letter)  
 - `DDD` — Day of the year  
 - `#` — Offset added to the day count
-
 Leap years and year transitions are supported.
+
+## Use as an App
+
+You can add this tool to your phone home screen:
+
+- **iPhone (Safari):** Tap the **Share** icon → scroll → **Add to Home Screen**
+- **Android (Chrome):** Tap the **⋮ menu** → **Add to Home screen**
+
+## Contributing
+
+Feel free to fork the repository, open issues, or submit prs.
 
 ## Disclaimer
 
