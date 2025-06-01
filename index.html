@@ -9,16 +9,25 @@
 <body>
   <div class="container">
     <h1>Ezekiel Bread Lot Decoder</h1>
-    <p>Enter the 5-character lot number from your bread package:</p>
+    <p>Enter the 5-character lot number or scan the tag:</p>
+
     <input type="text" id="lotInput" maxlength="5" placeholder="e.g. R1234" />
     <button onclick="decodeLot()">Decode</button>
+
+    <div class="divider">OR</div>
+
+    <input type="file" accept="image/*" capture="environment" id="imageInput" style="display: none;" onchange="handleImage(this)">
+    <button onclick="document.getElementById('imageInput').click()">Scan Tag</button>
+
     <p id="result"></p>
   </div>
 
   <footer>
-    <p>Made with ❤️ for fellow Ezekiel bread fans</p>
+    <p>Made with ❤ for fellow Ezekiel bread fans </p>
+    <p>Not affiliated with Food For Life Baking Co</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
   <script src="decoder.js"></script>
 </body>
 </html>
