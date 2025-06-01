@@ -54,49 +54,35 @@ function handleImage(input) {
 
   reader.onload = function (e) {
     img.onload = function () {
-      // Resize image
-      const maxDim = 800;
-      let width = img.width;
-      let height = img.height;
-      if (width > height && width > maxDim) {
-        height *= maxDim / width;
-        width = maxDim;
-      } else if (height > maxDim) {
-        width *= maxDim / height;
-        height = maxDim;
-      }
-
+      const scale = 0.5;
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
-      canvas.width = width;
-      canvas.height = height;
-      ctx.drawImage(img, 0, 0, width, height);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
 
-      // Preprocess: grayscale + contrast (binary)
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // Grayscale only (preserves original letter shape better)
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imageData.data;
-
       for (let i = 0; i < data.length; i += 4) {
-        const r = data[i];
-        const g = data[i + 1];
-        const b = data[i + 2];
-        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-        const contrast = ((gray - 128) * 1.5) + 128;
-        const clamped = Math.max(0, Math.min(255, contrast));
-        data[i] = data[i + 1] = data[i + 2] = clamped;
+        const gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+        data[i] = data[i+1] = data[i+2] = gray;
       }
       ctx.putImageData(imageData, 0, 0);
-
-      // (Optional) Show preview of processed image
-      // document.body.appendChild(canvas); // Uncomment if needed for testing
 
       Tesseract.recognize(
         canvas,
         'eng',
-        { logger: m => console.log(m) }
+        {
+          logger: m => console.log(m),
+          tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        }
       ).then(({ data: { text } }) => {
-        //console.log("RAW OCR:", text);  // Debugging line to see the console output
+        console.log("OCR Raw Output:", text);
         scanStatus.textContent = "✅ Scan complete.";
+
+        // Match the first valid lot number: a letter, 3 digits, then 1 digit
         const match = text.toUpperCase().match(/[A-Z]\d{3}\d/);
         if (match) {
           const code = match[0];
