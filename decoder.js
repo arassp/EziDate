@@ -49,23 +49,52 @@ function handleImage(input) {
   scanStatus.textContent = "📷 Processing image...";
   resultElem.textContent = "";
 
-  Tesseract.recognize(
-    file,
-    'eng',
-    { logger: m => console.log(m) }
-  ).then(({ data: { text } }) => {
-    scanStatus.textContent = "✅ Scan complete.";
-    const match = text.toUpperCase().match(/\b[A-Z]\d{3}\d\b/);
-    if (match) {
-      const code = match[0];
-      document.getElementById("lotInput").value = code;
-      resultElem.textContent = `🔍 Detected code: ${code}`;
-      decodeLot();
-    } else {
-      resultElem.textContent = "❌ No valid lot code detected. Try a clearer photo.";
-    }
-  }).catch(() => {
-    scanStatus.textContent = "";
-    resultElem.textContent = "⚠️ Failed to process image. Try again.";
-  });
+  const img = new Image();
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    img.onload = function () {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // Resize to max 800x800 (adjust if needed)
+      const maxDim = 800;
+      let width = img.width;
+      let height = img.height;
+      if (width > height && width > maxDim) {
+        height *= maxDim / width;
+        width = maxDim;
+      } else if (height > maxDim) {
+        width *= maxDim / height;
+        height = maxDim;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      Tesseract.recognize(
+        canvas,
+        'eng',
+        { logger: m => console.log(m) }
+      ).then(({ data: { text } }) => {
+        scanStatus.textContent = "✅ Scan complete.";
+        const match = text.toUpperCase().match(/\b[A-Z]\d{3}\d\b/);
+        if (match) {
+          const code = match[0];
+          document.getElementById("lotInput").value = code;
+          resultElem.textContent = `🔍 Detected code: ${code}`;
+          decodeLot();
+        } else {
+          resultElem.textContent = "❌ No valid lot code detected. Try a clearer photo.";
+        }
+      }).catch(() => {
+        scanStatus.textContent = "";
+        resultElem.textContent = "⚠️ Failed to process image.";
+      });
+    };
+    img.src = e.target.result;
+  };
+
+  reader.readAsDataURL(file);
 }
