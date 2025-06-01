@@ -2,7 +2,7 @@
 
 A simple web tool to decode the 5-character lot numbers found on Ezekiel bread packaging. It converts the code into a readable production date using an encoded year, day of year, and offset.
 
-**Live site:** [https://
+**Live site:** [[https://](https://arassp.github.io/EziDate/)]
 
 ## Format
 
