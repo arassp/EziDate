@@ -81,8 +81,9 @@ function handleImage(input) {
         const g = data[i + 1];
         const b = data[i + 2];
         const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-        const binary = gray > 160 ? 255 : 0;
-        data[i] = data[i + 1] = data[i + 2] = binary;
+        const contrast = ((gray - 128) * 1.5) + 128;
+        const clamped = Math.max(0, Math.min(255, contrast));
+        data[i] = data[i + 1] = data[i + 2] = clamped;
       }
       ctx.putImageData(imageData, 0, 0);
 
