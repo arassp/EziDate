@@ -20,11 +20,15 @@
     <button onclick="document.getElementById('imageInput').click()">Scan Tag</button>
 
     <p id="result"></p>
+    <p id="scanStatus"></p>
+
+    <button class="help" onclick="alert('📌 Tip: Take a clear, well-lit photo of the lot number. It looks like R1234 and is usually printed or stamped on the tag.')">
+      Help
+    </button>
   </div>
 
   <footer>
-    <p>Made with ❤ for fellow Ezekiel bread fans </p>
-    <p>Not affiliated with Food For Life Baking Co</p>
+    <p>Not affiliated with Food For Life. Built for personal use.</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
