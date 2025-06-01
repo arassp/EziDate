@@ -95,7 +95,7 @@ function handleImage(input) {
         'eng',
         { logger: m => console.log(m) }
       ).then(({ data: { text } }) => {
-        //console.log("RAW OCR:", text);  // Debugging line to see the console output
+        console.log("RAW OCR:", text);  // Debugging line to see the console output
         scanStatus.textContent = "✅ Scan complete.";
         const match = text.toUpperCase().match(/[A-Z]\d{3}\d/);
         if (match) {
