@@ -43,6 +43,16 @@ button:hover {
   background-color: #365f3c;
 }
 
+button.help {
+  background-color: #888;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+button.help:hover {
+  background-color: #555;
+}
+
 .divider {
   margin: 1rem 0;
   font-weight: bold;
@@ -52,6 +62,12 @@ button:hover {
 #result {
   font-weight: bold;
   margin-top: 1rem;
+}
+
+#scanStatus {
+  color: #666;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
 }
 
 footer {
