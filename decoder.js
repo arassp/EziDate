@@ -79,7 +79,7 @@ function handleImage(input) {
         { logger: m => console.log(m) }
       ).then(({ data: { text } }) => {
         scanStatus.textContent = "✅ Scan complete.";
-        const match = text.toUpperCase().match(/\b[A-Z]\d{3}\d\b/);
+        const match = text.toUpperCase().match(/[A-Z]\d{3}\d/);
         if (match) {
           const code = match[0];
           document.getElementById("lotInput").value = code;
